@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass="com.sgglabs.XXXXX"
+mvn exec:java -Dexec.mainClass="com.sgglabs.webapps.Application"
