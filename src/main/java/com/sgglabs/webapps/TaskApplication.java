@@ -30,17 +30,17 @@ public class TaskApplication {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(TaskApplication.class);
-        Runtime runtime = Runtime.getRuntime();
+        /*Runtime runtime = Runtime.getRuntime();
         final Thread mainThread = Thread.currentThread();
         runtime.addShutdownHook(new Thread() {
             public void run() {
             // close your resources here before calling interrupt
                 mainThread.interrupt();
             }
-        });
+        });*/
 
         //initialize your application here
-        AppConfig.init();
+        //AppConfig.init();
         TaskApplication.init();
     }
 
@@ -52,7 +52,7 @@ public class TaskApplication {
     private static void init() {
         exception(Exception.class, (e, req, res) -> e.printStackTrace());
         staticFiles.location("/public");
-        port(Integer.parseInt(AppConfig.get(AppConfig.APP_SERVICE_PORT)));
+        port(9090);//Integer.parseInt(AppConfig.get(AppConfig.APP_SERVICE_PORT)));
 
         /**
          * Get list of all tasks
