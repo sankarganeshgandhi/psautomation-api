@@ -1,1 +1,2 @@
-mvn exec:java -Dexec.mainClass="com.sgglabs.webapps.TaskApplication"
+rem mvn exec:java -Dexec.mainClass="com.sgglabs.webapps.TaskApplication"
+mvn spring-boot:run

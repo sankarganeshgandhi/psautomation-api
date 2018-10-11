@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 /*
-CREATE TABLE TaskRepository (
+CREATE TABLE Task (
     Id BIGINT(20) NOT NULL AUTO_INCREMENT,
     Name VARCHAR(30) NOT NULL,
     CreatedBy INT(4) NOT NULL,
@@ -14,13 +14,13 @@ CREATE TABLE TaskRepository (
     ModifiedDate DATE,
     StatusId INT(2) NOT NULL,
     PRIMARY KEY (Id),
-    FOREIGN KEY (CreatedBy) REFERENCES User(Id),
-    FOREIGN KEY (ModifiedBy) REFERENCES User(Id),
+    FOREIGN KEY (CreatedBy) REFERENCES UserRepository(Id),
+    FOREIGN KEY (ModifiedBy) REFERENCES UserRepository(Id),
     FOREIGN KEY (StatusId) REFERENCES Status(Id)
 ) ENGINE = INNODB;
  */
-@Entity
-@Table(name = "TaskRepository")
+@Entity(name = "Task")
+@Table(name = "Task")
 public class Task {
     private static final String TO_STRING_FORMAT =
             "TaskRepository[id=%s, name='%s', createdBy='%s', modifiedBy='%s', createdDate='%s'" +
@@ -47,11 +47,11 @@ public class Task {
     @Column(name = "StatusId")
     private int statusId;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -108,10 +108,10 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id &&
-                createdBy == task.createdBy &&
+        return createdBy == task.createdBy &&
                 modifiedBy == task.modifiedBy &&
                 statusId == task.statusId &&
+                Objects.equals(id, task.id) &&
                 Objects.equals(name, task.name) &&
                 Objects.equals(createdDate, task.createdDate) &&
                 Objects.equals(modifiedDate, task.modifiedDate);

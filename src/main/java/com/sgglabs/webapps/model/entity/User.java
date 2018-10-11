@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * CREATE TABLE User (
+ * CREATE TABLE User(
  *     Id INT(4) NOT NULL AUTO_INCREMENT,
  *     Name VARCHAR(30) NOT NULL,
  *     RoleId INT(3) NOT NULL,
@@ -33,10 +33,10 @@ public class User {
     private String roleId;
 
     @Column(name = "CreatedBy")
-    private LocalDate createdBy;
+    private String createdBy;
 
     @Column(name = "ModifiedBy")
-    private LocalDate modifiedBy;
+    private String modifiedBy;
 
     @Column(name = "CreatedDate")
     private LocalDate createdDate;
@@ -71,19 +71,19 @@ public class User {
         this.roleId = roleId;
     }
 
-    public LocalDate getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(LocalDate createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    public LocalDate getModifiedBy() {
+    public String getModifiedBy() {
         return modifiedBy;
     }
 
-    public void setModifiedBy(LocalDate modifiedBy) {
+    public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
@@ -137,8 +137,8 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", roleId='" + roleId + '\'' +
-                ", createdBy=" + createdBy +
-                ", modifiedBy=" + modifiedBy +
+                ", createdBy='" + createdBy + '\'' +
+                ", modifiedBy='" + modifiedBy + '\'' +
                 ", createdDate=" + createdDate +
                 ", modifiedDate=" + modifiedDate +
                 ", statusId=" + statusId +

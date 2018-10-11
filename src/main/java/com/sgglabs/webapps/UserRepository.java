@@ -1,8 +1,9 @@
 package com.sgglabs.webapps;
 
+import com.sgglabs.webapps.model.entity.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface User extends CrudRepository<User, Integer> {
+public interface UserRepository extends CrudRepository<User, Integer> {
 }
