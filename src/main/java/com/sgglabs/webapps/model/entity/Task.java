@@ -4,33 +4,43 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-/*
-CREATE TABLE Task (
-    Id BIGINT(20) NOT NULL AUTO_INCREMENT,
-    Name VARCHAR(30) NOT NULL,
-    CreatedBy INT(4) NOT NULL,
-    ModifiedBy INT(4) NOT NULL,
-    CreatedDate DATE,
-    ModifiedDate DATE,
-    StatusId INT(2) NOT NULL,
-    PRIMARY KEY (Id),
-    FOREIGN KEY (CreatedBy) REFERENCES UserRepository(Id),
-    FOREIGN KEY (ModifiedBy) REFERENCES UserRepository(Id),
-    FOREIGN KEY (StatusId) REFERENCES Status(Id)
-) ENGINE = INNODB;
+/**
+ * CREATE TABLE Task (
+ *     Id BIGINT(20) NOT NULL AUTO_INCREMENT,
+ *     Description VARCHAR(100) NOT NULL,
+ *     Remarks VARCHAR(250) NULL,
+ *     ScriptId INT(20) NOT NULL,
+ *     InputValues VARCHAR(250) NULL,
+ *     CreatedBy INT(4) NOT NULL,
+ *     ModifiedBy INT(4) NOT NULL,
+ *     CreatedDate DATE,
+ *     ModifiedDate DATE,
+ *     StatusId INT(2) NOT NULL,
+ *     PRIMARY KEY (Id),
+ *     FOREIGN KEY (ScriptId) REFERENCES Script(Id),
+ *     FOREIGN KEY (CreatedBy) REFERENCES User(Id),
+ *     FOREIGN KEY (ModifiedBy) REFERENCES User(Id),
+ *     FOREIGN KEY (StatusId) REFERENCES Status(Id)
+ * ) ENGINE = INNODB;
  */
 @Entity(name = "Task")
 @Table(name = "Task")
 public class Task {
-    private static final String TO_STRING_FORMAT =
-            "TaskRepository[id=%s, name='%s', createdBy='%s', modifiedBy='%s', createdDate='%s'" +
-                    "modifiedDate=%s, statusId=%s]";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "Name")
-    private String name;
+    @Column(name = "Description")
+    private String description;
+
+    @Column(name = "Remarks")
+    private String remarks;
+
+    @Column(name = "ScriptId")
+    private Integer scriptId;
+
+    @Column(name = "InputValues")
+    private String inputValues;
 
     @Column(name = "CreatedBy")
     private int createdBy;
@@ -45,7 +55,7 @@ public class Task {
     private LocalDate modifiedDate;
 
     @Column(name = "StatusId")
-    private int statusId;
+    private Integer statusId;
 
     public Long getId() {
         return id;
@@ -55,12 +65,36 @@ public class Task {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public Integer getScriptId() {
+        return scriptId;
+    }
+
+    public void setScriptId(Integer scriptId) {
+        this.scriptId = scriptId;
+    }
+
+    public String getInputValues() {
+        return inputValues;
+    }
+
+    public void setInputValues(String inputValues) {
+        this.inputValues = inputValues;
     }
 
     public int getCreatedBy() {
@@ -95,11 +129,11 @@ public class Task {
         this.modifiedDate = modifiedDate;
     }
 
-    public int getStatusId() {
+    public Integer getStatusId() {
         return statusId;
     }
 
-    public void setStatusId(int statusId) {
+    public void setStatusId(Integer statusId) {
         this.statusId = statusId;
     }
 
@@ -110,21 +144,35 @@ public class Task {
         Task task = (Task) o;
         return createdBy == task.createdBy &&
                 modifiedBy == task.modifiedBy &&
-                statusId == task.statusId &&
                 Objects.equals(id, task.id) &&
-                Objects.equals(name, task.name) &&
+                Objects.equals(description, task.description) &&
+                Objects.equals(remarks, task.remarks) &&
+                Objects.equals(scriptId, task.scriptId) &&
+                Objects.equals(inputValues, task.inputValues) &&
                 Objects.equals(createdDate, task.createdDate) &&
-                Objects.equals(modifiedDate, task.modifiedDate);
+                Objects.equals(modifiedDate, task.modifiedDate) &&
+                Objects.equals(statusId, task.statusId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, createdBy, modifiedBy, createdDate, modifiedDate, statusId);
+        return Objects.hash(id, description, remarks, scriptId, inputValues, createdBy, modifiedBy,
+                createdDate, modifiedDate, statusId);
     }
 
     @Override
     public String toString() {
-        return String.format(TO_STRING_FORMAT, id, name, createdBy, modifiedBy, createdDate, modifiedDate,
-                statusId);
+        return "Task{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", remarks='" + remarks + '\'' +
+                ", scriptId=" + scriptId +
+                ", inputValues='" + inputValues + '\'' +
+                ", createdBy=" + createdBy +
+                ", modifiedBy=" + modifiedBy +
+                ", createdDate=" + createdDate +
+                ", modifiedDate=" + modifiedDate +
+                ", statusId=" + statusId +
+                '}';
     }
 }

@@ -40,7 +40,7 @@ public class Role {
     private LocalDate modifiedDate;
 
     @Column(name = "StatusId")
-    private int statusId;
+    private Integer statusId;
 
     public Integer getId() {
         return id;
@@ -90,11 +90,11 @@ public class Role {
         this.modifiedDate = modifiedDate;
     }
 
-    public int getStatusId() {
+    public Integer getStatusId() {
         return statusId;
     }
 
-    public void setStatusId(int statusId) {
+    public void setStatusId(Integer statusId) {
         this.statusId = statusId;
     }
 
@@ -103,13 +103,13 @@ public class Role {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
-        return statusId == role.statusId &&
-                Objects.equals(id, role.id) &&
+        return Objects.equals(id, role.id) &&
                 Objects.equals(name, role.name) &&
                 Objects.equals(createdBy, role.createdBy) &&
                 Objects.equals(modifiedBy, role.modifiedBy) &&
                 Objects.equals(createdDate, role.createdDate) &&
-                Objects.equals(modifiedDate, role.modifiedDate);
+                Objects.equals(modifiedDate, role.modifiedDate) &&
+                Objects.equals(statusId, role.statusId);
     }
 
     @Override

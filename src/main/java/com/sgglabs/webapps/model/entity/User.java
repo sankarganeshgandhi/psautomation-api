@@ -45,7 +45,7 @@ public class User {
     private LocalDate modifiedDate;
 
     @Column(name = "StatusId")
-    private int statusId;
+    private Integer statusId;
 
     public Integer getId() {
         return id;
@@ -103,11 +103,11 @@ public class User {
         this.modifiedDate = modifiedDate;
     }
 
-    public int getStatusId() {
+    public Integer getStatusId() {
         return statusId;
     }
 
-    public void setStatusId(int statusId) {
+    public void setStatusId(Integer statusId) {
         this.statusId = statusId;
     }
 
@@ -116,14 +116,14 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return statusId == user.statusId &&
-                Objects.equals(id, user.id) &&
+        return Objects.equals(id, user.id) &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(roleId, user.roleId) &&
                 Objects.equals(createdBy, user.createdBy) &&
                 Objects.equals(modifiedBy, user.modifiedBy) &&
                 Objects.equals(createdDate, user.createdDate) &&
-                Objects.equals(modifiedDate, user.modifiedDate);
+                Objects.equals(modifiedDate, user.modifiedDate) &&
+                Objects.equals(statusId, user.statusId);
     }
 
     @Override
