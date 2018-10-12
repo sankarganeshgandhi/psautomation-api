@@ -3,6 +3,7 @@ package com.sgglabs.webapps.model.entity;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * CREATE TABLE Role (
@@ -28,10 +29,10 @@ public class Role {
     private String name;
 
     @Column(name = "CreatedBy")
-    private LocalDate createdBy;
+    private String createdBy;
 
     @Column(name = "ModifiedBy")
-    private LocalDate modifiedBy;
+    private String modifiedBy;
 
     @Column(name = "CreatedDate")
     private LocalDate createdDate;
@@ -41,6 +42,13 @@ public class Role {
 
     @Column(name = "StatusId")
     private Integer statusId;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "RolePermission",
+            joinColumns = @JoinColumn(name = "RoleId", referencedColumnName = "Id"),
+            inverseJoinColumns = @JoinColumn(name = "PermissionId", referencedColumnName = "Id")
+    )
+    private Set<Permission> permissions;
 
     public Integer getId() {
         return id;
@@ -58,19 +66,19 @@ public class Role {
         this.name = name;
     }
 
-    public LocalDate getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(LocalDate createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    public LocalDate getModifiedBy() {
+    public String getModifiedBy() {
         return modifiedBy;
     }
 
-    public void setModifiedBy(LocalDate modifiedBy) {
+    public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
@@ -98,6 +106,14 @@ public class Role {
         this.statusId = statusId;
     }
 
+    public Set<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -122,8 +138,8 @@ public class Role {
         return "Role{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", createdBy=" + createdBy +
-                ", modifiedBy=" + modifiedBy +
+                ", createdBy='" + createdBy + '\'' +
+                ", modifiedBy='" + modifiedBy + '\'' +
                 ", createdDate=" + createdDate +
                 ", modifiedDate=" + modifiedDate +
                 ", statusId=" + statusId +

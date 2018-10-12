@@ -3,34 +3,30 @@ package com.sgglabs.webapps.model.entity;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 /**
- * CREATE TABLE User(
- *     Id INT(4) NOT NULL AUTO_INCREMENT,
+ * CREATE TABLE Permission (
+ *     Id INT(3) NOT NULL AUTO_INCREMENT,
  *     Name VARCHAR(30) NOT NULL,
- *     RoleId INT(3) NOT NULL,
  *     CreatedBy VARCHAR(10),
  *     ModifiedBy VARCHAR(10),
  *     CreatedDate DATE,
  *     ModifiedDate DATE,
  *     StatusId INT(2),
  *     PRIMARY KEY (Id),
- *     FOREIGN KEY (RoleId) REFERENCES Role(Id),
  *     FOREIGN KEY (StatusId) REFERENCES Status(Id)
  * ) ENGINE = INNODB;
  */
-@Entity(name = "User")
-@Table(name = "User")
-public class User {
+@Entity(name = "Permission")
+@Table(name = "Permission")
+public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "Name")
     private String name;
-
-    @Column(name = "RoleId")
-    private Integer roleId;
 
     @Column(name = "CreatedBy")
     private String createdBy;
@@ -61,14 +57,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
     }
 
     public String getCreatedBy() {
@@ -115,28 +103,26 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(roleId, user.roleId) &&
-                Objects.equals(createdBy, user.createdBy) &&
-                Objects.equals(modifiedBy, user.modifiedBy) &&
-                Objects.equals(createdDate, user.createdDate) &&
-                Objects.equals(modifiedDate, user.modifiedDate) &&
-                Objects.equals(statusId, user.statusId);
+        Permission that = (Permission) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(createdBy, that.createdBy) &&
+                Objects.equals(modifiedBy, that.modifiedBy) &&
+                Objects.equals(createdDate, that.createdDate) &&
+                Objects.equals(modifiedDate, that.modifiedDate) &&
+                Objects.equals(statusId, that.statusId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, roleId, createdBy, modifiedBy, createdDate, modifiedDate, statusId);
+        return Objects.hash(id, name, createdBy, modifiedBy, createdDate, modifiedDate, statusId);
     }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Permission{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", roleId='" + roleId + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", modifiedBy='" + modifiedBy + '\'' +
                 ", createdDate=" + createdDate +

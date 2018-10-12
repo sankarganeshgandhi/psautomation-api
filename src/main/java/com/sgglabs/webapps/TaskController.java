@@ -1,9 +1,6 @@
 package com.sgglabs.webapps;
 
-import com.sgglabs.webapps.model.entity.Script;
-import com.sgglabs.webapps.model.entity.StatusEnum;
-import com.sgglabs.webapps.model.entity.Task;
-import com.sgglabs.webapps.model.entity.User;
+import com.sgglabs.webapps.model.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +30,12 @@ public class TaskController {
 
     @Autowired
     ScriptRepository scriptRepo;
+
+    @Autowired
+    UserRepository userRepo;
+
+    @Autowired
+    RoleRepository roleRepo;
 
     /**
      * Get all tasks
@@ -85,8 +88,26 @@ public class TaskController {
      * @return
      */
     @PutMapping("/{taskId}/approve")
-    public Task updateTaskApprove(@PathVariable Long taskId, @RequestBody User user) {
-        return updateTaskStatus(taskId, StatusEnum.Approved);
+    public ResponseEntity updateTaskApprove(@PathVariable Long taskId, @RequestBody User user) {
+        User requestingUser = userRepo.findById(user.getId()).get();
+        Role role = roleRepo.findById(requestingUser.getRoleId()).get();
+        boolean canExecute = false;
+        for (Permission permission : role.getPermissions()) {
+            if (permission.getName().equalsIgnoreCase(PermissionEnum.Approve.getString())) {
+                canExecute = true;
+                break;
+            }
+        }
+        ResponseEntity resEntity = null;
+        if (canExecute) {
+            Task task = updateTaskStatus(taskId, StatusEnum.Approved);
+            resEntity = new ResponseEntity(task, HttpStatus.OK);
+        } else {
+            String msg = "User " + user.toString() + " do not have permission";
+            LOG.error(msg);
+            resEntity = new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+        }
+        return resEntity;
     }
 
     /**
@@ -109,56 +130,62 @@ public class TaskController {
     @PutMapping("/{taskId}/run")
     public ResponseEntity runTask(@PathVariable Long taskId, @RequestBody User user) {
         Task task = taskRepo.findById(taskId).get();
-        Script script = scriptRepo.findById(task.getScriptId()).get();
 
-        String[] inputValues = task.getInputValues().split(",");
-        List<String> valueList = new ArrayList<String>();
-        for(String inputValue : inputValues) {
-            String value = inputValue.substring(1, inputValue.length() - 1);
-            LOG.debug("(*******" + value + "*******)");
-            valueList.add(value);
-        }
+        if (task.getStatusId() == StatusEnum.Approved.getValue()) {
+            Script script = scriptRepo.findById(task.getScriptId()).get();
 
-        MessageFormat msgFormat = new MessageFormat(script.getInputTemplate());
-        String finalInputValues = msgFormat.format(valueList.toArray());
-
-        StringBuffer sysCmdBuffer = new StringBuffer(script.getScriptCommand());
-        sysCmdBuffer.append(SPACE)
-                .append(script.getScriptDirPath())
-                .append(File.separatorChar)
-                .append(script.getScriptFileName());
-                /*.append(SPACE)
-                .append(finalInputValues);*/
-
-        LOG.debug("(*******" + sysCmdBuffer.toString() + "*******)");
-
-        try {
-            Process sysProc = Runtime.getRuntime().exec(sysCmdBuffer.toString());
-
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(sysProc.getInputStream()));
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(sysProc.getErrorStream()));
-
-            // read the output from the command
-
-            LOG.info("Here is the standard output of the command:\n");
-            StringBuffer outputBuffer = new StringBuffer();
-            String streamLine;
-            while ((streamLine = stdInput.readLine()) != null) {
-                outputBuffer.append(streamLine).append(System.lineSeparator());
+            String[] inputValues = task.getInputValues().split(",");
+            List<String> valueList = new ArrayList<String>();
+            for (String inputValue : inputValues) {
+                String value = inputValue.substring(1, inputValue.length() - 1);
+                LOG.debug("(*******" + value + "*******)");
+                valueList.add(value);
             }
-            LOG.info(outputBuffer.toString());
 
-            // read any errors from the attempted command
-            outputBuffer.delete(0, outputBuffer.toString().length());
-            LOG.error("Here is the standard error of the command (if any):\n");
-            while ((streamLine = stdError.readLine()) != null) {
-                outputBuffer.append(streamLine).append(System.lineSeparator());
+            MessageFormat msgFormat = new MessageFormat(script.getInputTemplate());
+            String finalInputValues = msgFormat.format(valueList.toArray());
+
+            StringBuffer sysCmdBuffer = new StringBuffer(script.getScriptCommand());
+            sysCmdBuffer.append(SPACE)
+                    .append(script.getScriptDirPath())
+                    .append(File.separatorChar)
+                    .append(script.getScriptFileName())
+                    .append(SPACE)
+                    .append(finalInputValues);
+
+            LOG.debug("(*******" + sysCmdBuffer.toString() + "*******)");
+
+            try {
+                Process sysProc = Runtime.getRuntime().exec(sysCmdBuffer.toString());
+
+                BufferedReader stdInput = new BufferedReader(new InputStreamReader(sysProc.getInputStream()));
+                BufferedReader stdError = new BufferedReader(new InputStreamReader(sysProc.getErrorStream()));
+
+                // read the output from the command
+
+                LOG.info("Here is the standard output of the command:\n");
+                StringBuffer outputBuffer = new StringBuffer();
+                String streamLine;
+                while ((streamLine = stdInput.readLine()) != null) {
+                    outputBuffer.append(streamLine).append(System.lineSeparator());
+                }
+                LOG.info(outputBuffer.toString());
+
+                // read any errors from the attempted command
+                outputBuffer.delete(0, outputBuffer.toString().length());
+                LOG.error("Here is the standard error of the command (if any):\n");
+                while ((streamLine = stdError.readLine()) != null) {
+                    outputBuffer.append(streamLine).append(System.lineSeparator());
+                }
+                LOG.error(outputBuffer.toString());
+            } catch(IOException ioe){
+                LOG.debug(ioe.getMessage(), ioe.fillInStackTrace());
             }
-            LOG.error(outputBuffer.toString());
-        } catch(IOException ioe) {
-            LOG.debug(ioe.getMessage(), ioe.fillInStackTrace());
+        } else {
+            String msg = "Task is not approved to run";
+            LOG.error(msg);
+            return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
         }
-
         return new ResponseEntity(HttpStatus.OK);
     }
 

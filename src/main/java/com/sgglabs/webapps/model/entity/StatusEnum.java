@@ -10,7 +10,8 @@ public enum StatusEnum {
     Approved(4),    // HTTP - PUT approve
     Rejected(5),    // HTTP - PUT reject
     Completed(6),   // Run
-    Expired(7);     // Expired by system job
+    Expired(7),     // Expired by system job
+    Failed(8);
 
     private int enumValue;
     private String[] enumValues = new String[] {
@@ -20,7 +21,8 @@ public enum StatusEnum {
         "Approved",
         "Rejected",
         "Completed",
-        "Expired"
+        "Expired",
+        "Failed"
     };
 
     StatusEnum(int value) {
@@ -34,13 +36,5 @@ public enum StatusEnum {
     public String getString() {
         String status = null;
         return enumValues[enumValue - 1];
-        /*
-        if (enumValue == 1) {
-            status = "Inactive";
-        } else if (enumValue == 2) {
-            status = "Active";
-        }
-        return status;
-        */
     }
 }
